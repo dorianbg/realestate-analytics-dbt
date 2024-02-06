@@ -1,0 +1,70 @@
+version: 2
+
+sources:
+  - name: staging
+    database: property_cro
+    loaded_at_field: seen_time
+    schema: staging
+    tables:
+      - name: rental_flat_desc
+        freshness:
+          warn_after:
+            count: 72
+            period: hour
+          error_after:
+            count: 96
+            period: hour
+      - name: rentals_flats
+        freshness:
+          warn_after:
+            count: 72
+            period: hour
+          error_after:
+            count: 96
+            period: hour
+      - name: sale_flat_desc
+        freshness:
+          warn_after:
+            count: 72
+            period: hour
+          error_after:
+            count: 96
+            period: hour
+      - name: sale_house_desc
+        freshness:
+          warn_after:
+            count: 72
+            period: hour
+          error_after:
+            count: 96
+            period: hour
+      - name: sales_flats
+        freshness:
+          warn_after:
+            count: 48
+            period: hour
+          error_after:
+            count: 72
+            period: hour
+      - name: sales_houses
+        freshness:
+          warn_after:
+            count: 72
+            period: hour
+          error_after:
+            count: 96
+            period: hour
+  - name: generated
+    database: property_cro
+    schema: public
+    tables:
+      - name: ad_price_history_agg_api
+        loaded_at_field: created_at
+        freshness:
+          warn_after:
+            count: 26
+            period: hour
+          error_after:
+            count: 36
+            period: hour
+

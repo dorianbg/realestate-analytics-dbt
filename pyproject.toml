@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "prop_analytics_dbt"
+version = "0.1.0"
+description = ""
+authors = ["Dorian Beganovic"]
+
+[tool.poetry.dependencies]
+python = "~3.10"
+dbt-core = "^1.7.7"
+dbt-postgres = "^1.7.7"
+psycopg2-binary = "^2.9.5"
+dbt-duckdb = "^1.7.1"
+
+[build-system]
+requires = ["poetry-core>=1.2.0"]
+build-backend = "poetry.core.masonry.api"
