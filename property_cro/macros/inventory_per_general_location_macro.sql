@@ -1,4 +1,4 @@
-{% macro inventory_per_location_macro(mat_view, source_schema, source_table, price_history_view) %}
+{% macro inventory_per_general_location_macro(mat_view, source_schema, source_table, price_history_view) %}
 
 with zg_loc as (
     select distinct location from {{ ref(mat_view) }}
@@ -6,7 +6,7 @@ with zg_loc as (
 ),
 new_ads as (
     select quarter,
-           s.location,
+           substring(s.location FROM 1 FOR position(',' IN s.location) - 1) as location,
            count(distinct ad_id) filter (where price_m2 < 10000) as new_ads_qty,
            round((avg(days_on_the_market) filter (where price_m2 < 10000))::numeric,1) as new_ads_dom,
            round((avg(price_m2) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_px_m2,
@@ -15,11 +15,11 @@ new_ads as (
     from {{ ref(mat_view) }} s
     join {{ref ('mv_date_to_quarter_mapping') }} d on first_seen = date_
     where location in (select location from zg_loc)
-    group by d.quarter, s.location
+    group by d.quarter, substring(s.location FROM 1 FOR position(',' IN s.location) - 1)
 ), sold_ads as (
     select
         quarter,
-        s.location,
+        substring(s.location FROM 1 FOR position(',' IN s.location) - 1) as location,
         count(distinct ad_id) filter (where price_m2 < 10000) as sold_ads_qty,
         round((avg(days_on_the_market) filter (where price_m2 < 10000))::numeric,1) as sold_ads_dom,
         round((avg(price_m2) filter (where price_m2 < 10000))::numeric,1) as sold_ads_avg_px_m2,
@@ -30,11 +30,11 @@ new_ads as (
         on s.first_seen = d.date_
     where status = 'inactive'
         and location in (select location from zg_loc)
-    group by d.quarter, s.location
+    group by d.quarter, substring(s.location FROM 1 FOR position(',' IN s.location) - 1)
 ), actives as (
     select
         d.quarter,
-        s.location,
+        substring(s.location FROM 1 FOR position(',' IN s.location) - 1) as location,
         count(distinct s.ad_id) filter (where s.price < 10000000) as active_ads_qty,
         round((avg(days_on_the_market) filter (where s.price < 10000000))::numeric,1) as active_ads_dom,
         round((avg(s.price/s.size) filter (where s.price < 10000000))::numeric,1) as active_ads_avg_px_m2,
@@ -46,7 +46,7 @@ new_ads as (
     join {{ref ('mv_date_to_quarter_mapping') }} d
         on seen_date = date_
     where s.location in (select location from zg_loc)
-    group by quarter, s.location
+    group by quarter, substring(s.location FROM 1 FOR position(',' IN s.location) - 1)
 )
 select
     a.quarter as year_month,

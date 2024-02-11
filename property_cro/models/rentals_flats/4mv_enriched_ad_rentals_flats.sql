@@ -12,7 +12,7 @@ select
             then 25
         else sd.total_number_of_floors_in_building::integer
     end as total_number_of_floors_in_building
-from {{ ref('2vw_price_history_rentals_flats') }} s
+from {{ ref('2mv_price_history_rentals_flats') }} s
 join {{ ref('3vw_avg_ask_px_per_loc_rentals_flats') }}  a on s.location = a.location
 left join {{ source('staging', 'rental_flat_desc') }} sd on s.ad_id = sd.ad_id
 left join {{ ref('3vw_avg_ask_px_per_loc_size_rentals_flats') }} a2 on s.location = a2.location and FLOOR(s.size / 20) * 20 = a2.size

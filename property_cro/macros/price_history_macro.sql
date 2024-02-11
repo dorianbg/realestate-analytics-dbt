@@ -1,4 +1,4 @@
-{% macro price_history_macro(source_schema, source_table, ref_name, source_max_price) %}
+{% macro price_history_macro(source_schema, source_table, ref_name, source_min_price, source_max_price, source_min_price_m2, source_max_price_m2) %}
 
 with t as (
     select
@@ -14,7 +14,7 @@ with t as (
 	from {{ source(source_schema, source_table) }} las
     join {{ ref(ref_name) }} as t
         on las.ad_id = t.ad_id
-    where las.price < {{source_max_price}}
+    where las.price between {{source_min_price}} and {{source_max_price}}
 ),
 ad_price_history as (
     select
@@ -78,5 +78,5 @@ from ad_price_history aph
 join last_ad ad
 	on aph.ad_id = ad.ad_id
 	and aph.last_seen = ad.seen_date
-
+where (ad.price/ad.size) between {{source_min_price_m2}} and {{source_max_price_m2}}
 {% endmacro %}

@@ -4,23 +4,22 @@
 
 with quarterly as (
     SELECT current_date - interval (91 * generate_series) day AS quarter
-    FROM (select * from generate_series(0, 50))
+    FROM generate_series(0, 50)
 ), daily as (
     select current_date - interval (generate_series) day AS date_
-    from (select * from generate_series(0,4550))
+    from generate_series(0,4550)
 ), joined as (
     select
-        date_, quarter,
-        ROW_NUMBER() OVER (PARTITION BY date_ ORDER BY abs(date_ - quarter)) as rn
+        date_, quarter, extract('day' from date_ - quarter),
+        ROW_NUMBER() OVER (PARTITION BY date_ ORDER BY extract('day' from date_ - quarter) desc) as rn
     from quarterly q
              join daily d on q.quarter > d.date_
 )
-select date_, quarter
+select date_, quarter, *
 from joined
 where rn = 1
 
-
-{% elif "postgres" in target.name %}
+    {% elif "postgres" in target.name %}
 
 with quarterly as (
     SELECT current_date - 91 * sequence.day AS quarter

@@ -6,7 +6,7 @@ select distinct
 	count(distinct ad_id) area_total_ads,
 	avg(price/size) as area_average
 from {{ ref(ref_name) }}
-WHERE last_seen >  {{ dbt_utils.current_timestamp() }} - INTERVAL '{{lookback_days}}'
+WHERE last_seen >  {{ dbt.current_timestamp() }}::date - INTERVAL '{{lookback_days}}'
     and price > {{min_price}}
 group by location, FLOOR(size / 20)
 

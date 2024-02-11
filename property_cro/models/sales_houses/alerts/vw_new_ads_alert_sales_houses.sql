@@ -67,7 +67,7 @@ where price <= 200000
     and location2 not in ('Grad Zagreb, Peščenica - Žitnjak, Kozari put')
     and m1.price > 1000
     {# and m1.status = 'active' #}
-    and m1.first_seen between {{ dbt_utils.current_timestamp() }} - INTERVAL '120 DAY' and {{ dbt_utils.current_timestamp() }}
+    and m1.first_seen between {{ dbt.current_timestamp() }}::date - INTERVAL '120 DAY' and {{ dbt.current_timestamp() }}::date
 --     and (
 --         (lower(advertiser) not like '%nekretnin%' and lower(advertiser) not like '%agencij%'
 --              and lower(advertiser) not like '%real estate%' and lower(advertiser) not like '%d.o.o.%'

@@ -4,19 +4,20 @@
 
 with zg_loc as (
     select distinct location from {{ ref(mat_view) }}
-    where location2 like 'Grad Zagreb,%'
+    where location2 like 'Grad Zagreb,%' or location2 like 'Zagrebačka,%'
 ),
-     new_ads as (
-         select cast(strftime(first_seen,'%Y%m') as integer) as year_month,
-                count(distinct ad_id) filter (where price_m2 < 10000) as new_ads_qty,
-                round((avg(days_on_the_market) filter (where price_m2 < 10000))::numeric,1) as new_ads_dom,
-                round((avg(price_m2) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_px_m2,
-                round((avg(price) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_px,
-                round((avg(size) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_size
-         from {{ ref(mat_view) }}
-         where location in (select location from zg_loc)
-         group by cast(strftime(first_seen, '%Y%m') as integer)
-     ), sold_ads as (
+new_ads as (
+    select
+        cast(strftime(first_seen,'%Y%m') as integer) as year_month,
+        count(distinct ad_id) filter (where price_m2 < 10000) as new_ads_qty,
+        round((avg(days_on_the_market) filter (where price_m2 < 10000))::numeric,1) as new_ads_dom,
+        round((avg(price_m2) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_px_m2,
+        round((avg(price) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_px,
+        round((avg(size) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_size
+    from {{ ref(mat_view) }}
+    where location in (select location from zg_loc)
+    group by cast(strftime(first_seen, '%Y%m') as integer)
+), sold_ads as (
     select
         cast(strftime(last_seen,'%Y%m') as integer) as year_month,
         count(distinct ad_id) filter (where price_m2 < 10000) as sold_ads_qty,
@@ -25,8 +26,7 @@ with zg_loc as (
         round((avg(price) filter (where price_m2 < 10000))::numeric,1) as sold_ads_avg_px,
         round((avg(size) filter (where price_m2 < 10000))::numeric,1) as sold_ads_avg_size
     from {{ ref(mat_view) }}
-    where status = 'inactive'
-      and location in (select location from zg_loc)
+    where status = 'inactive' and location in (select location from zg_loc)
     group by cast(strftime(last_seen,'%Y%m') as integer)
 ), actives as (
     select
@@ -70,17 +70,18 @@ with zg_loc as (
     select distinct location from {{ ref(mat_view) }}
     where location2 like 'Grad Zagreb,%'
 ),
-     new_ads as (
-         select cast(to_char(first_seen,'YYYYmm') as integer) as year_month,
-                count(distinct ad_id) filter (where price_m2 < 10000) as new_ads_qty,
-                round((avg(days_on_the_market) filter (where price_m2 < 10000))::numeric,1) as new_ads_dom,
-                round((avg(price_m2) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_px_m2,
-                round((avg(price) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_px,
-                round((avg(size) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_size
-         from {{ ref(mat_view) }}
-         where location in (select location from zg_loc)
-         group by cast(to_char(first_seen, 'YYYYmm') as integer)
-     ), sold_ads as (
+new_ads as (
+    select
+        cast(to_char(first_seen,'YYYYmm') as integer) as year_month,
+        count(distinct ad_id) filter (where price_m2 < 10000) as new_ads_qty,
+        round((avg(days_on_the_market) filter (where price_m2 < 10000))::numeric,1) as new_ads_dom,
+        round((avg(price_m2) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_px_m2,
+        round((avg(price) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_px,
+        round((avg(size) filter (where price_m2 < 10000))::numeric,1) as new_ads_avg_size
+    from {{ ref(mat_view) }}
+    where location in (select location from zg_loc)
+    group by cast(to_char(first_seen, 'YYYYmm') as integer)
+), sold_ads as (
     select
         cast(to_char(last_seen,'YYYYmm') as integer) as year_month,
         count(distinct ad_id) filter (where price_m2 < 10000) as sold_ads_qty,

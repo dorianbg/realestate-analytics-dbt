@@ -59,6 +59,6 @@ where
         (m1.price between 100000 and 250000 and (m1.year_built is null or m1.year_built >= 1971))
     )
     and m1.price > 1000
-    and m1.first_seen between {{ dbt_utils.current_timestamp() }} - INTERVAL '7 DAY' and {{ dbt_utils.current_timestamp() }}
+    and m1.first_seen between {{ dbt.current_timestamp() }}::date - INTERVAL '7 DAY' and {{ dbt.current_timestamp() }}::date
     and m1.status = 'active'
 order by m1.first_seen desc

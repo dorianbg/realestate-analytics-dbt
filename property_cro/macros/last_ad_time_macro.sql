@@ -5,8 +5,7 @@ select
     min(seen_date) as first_seen,
     max(seen_date) as last_seen,
     case
-        when max(seen_date) <
-             {{ dbt_utils.current_timestamp() }} - INTERVAL '4 DAY'
+        when max(seen_date) < {{ dbt.current_timestamp() }}::date - INTERVAL '4 DAY'
             then 'inactive'
         else 'active'
     end as status,

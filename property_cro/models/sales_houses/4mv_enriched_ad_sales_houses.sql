@@ -5,7 +5,7 @@ select
     sd.building_type,
     sd.house_type,
     sd.total_number_of_floors_in_building
-from {{ ref('2vw_price_history_sales_houses')}} s
+from {{ ref('2mv_price_history_sales_houses')}} s
 join {{ ref('3vw_avg_ask_px_per_loc_sales_houses')}}  a on s.location = a.location
 left join {{ source('staging', 'sale_house_desc') }} sd on s.ad_id = sd.ad_id
 left join {{ ref('3vw_avg_ask_px_per_loc_size_sales_houses')}} a2 on s.location = a2.location and FLOOR(s.size / 20) * 20 = a2.size
