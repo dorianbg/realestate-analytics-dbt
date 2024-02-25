@@ -1,0 +1,56 @@
+name: "dbt docs pipeline"
+
+# Triggers
+on:
+  # Triggers the workflow on push to main branch
+  push:
+    branches:
+      - main
+  # Triggers the workflow manually from GUI
+  workflow_dispatch:
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      - name: "Step 01 - Checkout current branch"
+        id: step-01
+        uses: actions/checkout@v3
+
+      - name: "Step 02 - Upload pages to artifact"
+        id: step-02
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: docs
+
+      - name: "Step 03 - Upload artifact for deployment job"
+        id: step-03
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: docs.zip
+
+  # Deploy to Github pages
+  deploy-to-github-pages:
+    # Add a dependency to the build job
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action

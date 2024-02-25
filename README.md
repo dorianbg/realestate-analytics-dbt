@@ -44,7 +44,7 @@ dbt docs serve --profiles-dir property_cro --project-dir property_cro --profile 
 
 Example:
 ```
-cp property_cro/target/*.json property_cro/target/*.html property_cro/target/graph.gpickle docs && zip -jrq docs/docs.zip docs
+cp property_cro/target/*.json property_cro/target/*.html property_cro/target/graph.gpickle docs && zip -jrq docs.zip docs
 ```
 
 ### Running DBT from CLI
