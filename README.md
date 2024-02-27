@@ -1,4 +1,6 @@
-# Prop analytics dbt
+# Real estate analytics dbt
+
+Models strictly apply to data from the Croatian housing market.
 
 ### Data model explained
 
