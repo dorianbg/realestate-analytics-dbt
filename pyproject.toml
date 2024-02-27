@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "prop_analytics_dbt"
+name = "real_estate_analytics_dbt"
 version = "0.1.0"
 description = ""
 authors = ["Dorian Beganovic"]
