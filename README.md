@@ -2,7 +2,7 @@
 
 Models strictly apply to data from the Croatian housing market.
 
-### Data model explained
+### Data model dbt docs
 Live dbt docs are [here](https://dorianbg.github.io/realestate-analytics-dbt/#!/overview). 
 
 ### Data model explained
