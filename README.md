@@ -3,6 +3,9 @@
 Models strictly apply to data from the Croatian housing market.
 
 ### Data model explained
+Live dbt docs are [here](https://dorianbg.github.io/realestate-analytics-dbt/#!/overview). 
+
+### Data model explained
 
 ##### Base data tables
 - sales_flats, rentals_flats, sales_houses
